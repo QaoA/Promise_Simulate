@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="Semaphore.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="ThreadPool.cpp" />
+    <ClCompile Include="EventLooper.cpp" />
+    <ClCompile Include="unittest\UnitTest.cpp">
+      <Filter>unittest</Filter>
+    </ClCompile>
+    <ClCompile Include="promise.h" />
+    <ClCompile Include="AnyTest.cpp">
+      <Filter>unittest</Filter>
+    </ClCompile>
+    <ClCompile Include="PromiseTets.cpp">
+      <Filter>unittest</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Semaphore.h" />
+    <ClInclude Include="Epoller.h" />
+    <ClInclude Include="EventLooper.h" />
+    <ClInclude Include="Handle.h" />
+    <ClInclude Include="EventHandler.h" />
+    <ClInclude Include="ThreadPool.h" />
+    <ClInclude Include="ThreadSafeQueue.h" />
+    <ClInclude Include="Any.h" />
+    <ClInclude Include="Any_help.h" />
+    <ClInclude Include="Core.h" />
+    <ClInclude Include="Promise_help.h" />
+    <ClInclude Include="NameSpace.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="unittest">
+      <UniqueIdentifier>{bb35c5b2-0eee-45a5-8c8e-fc59c19138a7}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
