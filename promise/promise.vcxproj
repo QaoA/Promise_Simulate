@@ -66,6 +66,7 @@
   <ItemGroup>
     <ClCompile Include="AnyTest.cpp" />
     <ClCompile Include="EventLooper.cpp" />
+    <ClCompile Include="EventLooperWithThreads.cpp" />
     <ClCompile Include="promise.h" />
     <ClCompile Include="PromiseTets.cpp" />
     <ClCompile Include="Semaphore.cpp" />
@@ -77,12 +78,14 @@
     <ClInclude Include="Any.h" />
     <ClInclude Include="Any_help.h" />
     <ClInclude Include="Core.h" />
+    <ClInclude Include="DummyFile.h" />
+    <ClInclude Include="EventLooperWithThreads.h" />
     <ClInclude Include="NameSpace.h" />
+    <ClInclude Include="NetException.h" />
     <ClInclude Include="Promise_help.h" />
     <ClInclude Include="Semaphore.h" />
     <ClInclude Include="Epoller.h" />
     <ClInclude Include="EventLooper.h" />
-    <ClInclude Include="Handle.h" />
     <ClInclude Include="EventHandler.h" />
     <ClInclude Include="ThreadPool.h" />
     <ClInclude Include="ThreadSafeQueue.h" />

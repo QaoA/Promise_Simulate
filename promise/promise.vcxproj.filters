@@ -15,12 +15,12 @@
     <ClCompile Include="PromiseTets.cpp">
       <Filter>unittest</Filter>
     </ClCompile>
+    <ClCompile Include="EventLooperWithThreads.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Semaphore.h" />
     <ClInclude Include="Epoller.h" />
     <ClInclude Include="EventLooper.h" />
-    <ClInclude Include="Handle.h" />
     <ClInclude Include="EventHandler.h" />
     <ClInclude Include="ThreadPool.h" />
     <ClInclude Include="ThreadSafeQueue.h" />
@@ -29,6 +29,9 @@
     <ClInclude Include="Core.h" />
     <ClInclude Include="Promise_help.h" />
     <ClInclude Include="NameSpace.h" />
+    <ClInclude Include="NetException.h" />
+    <ClInclude Include="DummyFile.h" />
+    <ClInclude Include="EventLooperWithThreads.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="unittest">

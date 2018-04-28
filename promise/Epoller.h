@@ -39,7 +39,7 @@ public:
 		epoll_ctl(m_epollFd, EPOLL_CTL_DEL, fd, NULL);
 	}
 
-	void Update(int fd, epoll_event e)
+	void Modify(int fd, epoll_event e)
 	{
 		epoll_ctl(m_epollFd, EPOLL_CTL_MOD, fd, &e);
 	}
