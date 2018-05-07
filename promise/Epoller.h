@@ -3,14 +3,21 @@
 
 #include <sys/epoll.h>
 #include <unistd.h>
-#include "EventHandler.h"
+#include <iostream>
+
+using std::cerr;
+using std::endl;
 
 class Epoller
 {
 public:
 	Epoller()
 	{
-		m_epollFd = epoll_create1(0);
+		m_epollFd = epoll_create(1);
+		if (m_epollFd < 0)
+		{
+			perror("error : ");
+		}
 	}
 
 	~Epoller()
@@ -31,17 +38,27 @@ public:
 
 	void Add(int fd, epoll_event e)
 	{
-		epoll_ctl(m_epollFd, EPOLL_CTL_ADD, fd, &e);
+		if (epoll_ctl(m_epollFd, EPOLL_CTL_ADD, fd, &e) < 0)
+		{
+			cerr << "error in epoll add" << endl;
+			perror("error : ");
+		}
 	}
 
 	void Remove(int fd)
 	{
-		epoll_ctl(m_epollFd, EPOLL_CTL_DEL, fd, NULL);
+		if (epoll_ctl(m_epollFd, EPOLL_CTL_DEL, fd, NULL) < 0)
+		{
+			cerr << "error in epoll del" << endl;
+		}
 	}
 
 	void Modify(int fd, epoll_event e)
 	{
-		epoll_ctl(m_epollFd, EPOLL_CTL_MOD, fd, &e);
+		if (epoll_ctl(m_epollFd, EPOLL_CTL_MOD, fd, &e) < 0)
+		{
+			cerr << "error in epoll mod" << endl;
+		}
 	}
 
 private:

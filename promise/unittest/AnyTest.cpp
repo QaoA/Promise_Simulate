@@ -1,5 +1,5 @@
-#include "Any.h"
-#include "NameSpace.h"
+#include "../Any.h"
+#include "../NameSpace.h"
 #include <gtest/gtest.h>
 #include <string>
 

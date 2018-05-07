@@ -4,55 +4,98 @@
 #include <sys/epoll.h>
 #include <functional>
 #include <cassert>
+#include <iostream>
+#include "Log.h"
 
 class EventLooper;
 
 class EventHandler
 {
+	friend class EventLooper;
 public:
-	typedef std::function<void(EventHandler * thisHandler)> CALLBACK;
+	EventHandler(int fd, EventLooper * loop) :
+		m_fd(fd),
+		m_event(0),
+		m_pLooper(loop)
+	{}
+	EventHandler(){}
+	virtual ~EventHandler() {}
 
-public:
 	void HandleEvent(uint32_t events)
 	{
 		if ((events & EPOLLHUP) && !(events & EPOLLIN))
 		{
-			if (m_closeFunc)
-			{
-				m_closeFunc(this);
-			}
+			HandleClose();
 		}
 		if (events & EPOLLERR)
 		{
-			if (m_errorFunc)
-			{
-				m_errorFunc(this);
-			}
+			HandleError();
 		}
 		if (events & (EPOLLIN | EPOLLPRI | EPOLLHUP))
 		{
-			if (m_readFunc)
-			{
-				m_readFunc(this);
-			}
+			HandleRead();
 		}
 		if (events & EPOLLOUT)
 		{
-			if (m_writeFunc)
-			{
-				m_writeFunc(this);
-			}
+			HandleWrite();
 		}
 	}
 
-public:
+protected:
+	void Update();
+	void EnableRead()
+	{
+		m_event |= (EPOLLIN | EPOLLPRI);
+		Update();
+	}
+	void DisableRead()
+	{
+		m_event &= ~(EPOLLIN | EPOLLPRI);
+		Update();
+	}
+	void EnableWrite()
+	{
+		m_event |= EPOLLOUT;
+		Update();
+	}
+	void DisableWrite()
+	{
+		m_event &= ~EPOLLOUT;
+		Update();
+	}
+	bool IsInReading()
+	{
+		return m_event & EPOLLIN;
+	}
+	bool IsInWriting()
+	{
+		return m_event & EPOLLOUT;
+	}
+	virtual void HandleRead() 
+	{
+		perror("defalut handle read");
+		Log << "read event come, no override, fd is " << m_fd << endl;
+	}
+	virtual void HandleWrite() 
+	{
+		perror("defalut handle write");
+		Log << "write event come, no override, fd is " << m_fd << endl;
+	}
+	virtual void HandleClose() 
+	{
+		perror("defalut handle close");
+		Log << "close event come, no override, fd is " << m_fd << endl;
+	}
+	virtual void HandleError() 
+	{
+		perror("defalut handle error");
+		Log << "error event come, no override, fd is " << m_fd << endl;
+	}
+
+protected:
 	int m_fd;
-	epoll_event m_event;
+	uint32_t m_event;
 	EventLooper * m_pLooper;
-	CALLBACK m_readFunc;
-	CALLBACK m_writeFunc;
-	CALLBACK m_closeFunc;
-	CALLBACK m_errorFunc;
 };
 
 #endif // !HANDLER_H

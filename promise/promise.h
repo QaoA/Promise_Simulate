@@ -15,14 +15,6 @@ class Rejector;
 
 class Promise
 {
-	friend class Resolver;
-	friend class Rejector;
-	//template<typename F, typename T, typename std::enable_if_t<std::is_same<result_of<F, T>, Promise>::value, bool>>
-	//friend void ResolvePromise(Promise & p, F && func, T && value);
-	//template<typename F, typename T, typename std::enable_if_t<!std::is_same<result_of<F, T>, Promise>::value, bool>>
-	//friend void ResolvePromise(Promise & p, F && func, T && value, bool isFulfilled);
-	//template<typename T>
-	//friend void ResolvePromise(Promise & p, std::nullptr_t, T && value, bool isFulFilled);
 public:
 	Promise():
 		m_pStorage(new Core())
@@ -139,7 +131,7 @@ public:
 				switch (state)
 				{
 				case Core::FULFILLED:
-					p.Accept(std::move(value));
+					p.Resolve(std::move(value));
 					break;
 				case Core::REJECTED:
 					p.Reject(std::move(value));
@@ -161,7 +153,7 @@ public:
 	{
 		if (isFulfilled)
 		{
-			p.Accept(std::forward<T>(value));
+			p.Resolve(std::forward<T>(value));
 		}
 		else
 		{
@@ -294,15 +286,24 @@ public:
 		return then(nullptr, std::forward<RejectFunc>(onReject));
 	}
 
-private:
+public:
 	template<typename T1>
-	void Accept(T1 && value)
+	void Resolve(T1 && value)
 	{
 		if (!m_pStorage)
 		{
 			throw "empty promise";
 		}
 		m_pStorage->Accept(std::forward<T1>(value));
+	}
+
+	void Resolve()
+	{
+		if (!m_pStorage)
+		{
+			throw "empty promise";
+		}
+		m_pStorage->Accept(empty{});
 	}
 
 	template<typename T1>
@@ -315,6 +316,14 @@ private:
 		m_pStorage->Reject(std::forward<T1>(value));
 	}
 
+	void Reject()
+	{
+		if (!m_pStorage)
+		{
+			throw "empty promise";
+		}
+		m_pStorage->Reject(empty{});
+	}
 private:
 	Core * m_pStorage;
 };
@@ -349,8 +358,22 @@ public:
 		return *this;
 	}
 
-	Resolver(const Resolver &) = delete;
-	Resolver & operator=(const Resolver &) = delete;
+	Resolver(const Resolver & rhs)
+	{
+		rhs.m_pCore->IncRef();
+		m_pCore = rhs.m_pCore;
+	}
+
+	Resolver & operator=(const Resolver & rhs)
+	{
+		if (m_pCore)
+		{
+			m_pCore->DecRef();
+		}
+		rhs.m_pCore->IncRef();
+		m_pCore = rhs.m_pCore;
+		return *this;
+	}
 
 public:
 	template<typename T1>
@@ -406,8 +429,21 @@ public:
 		rhs.m_pCore = nullptr;
 		return *this;
 	}
-	Rejector(const Rejector &) = delete;
-	Rejector & operator=(const Rejector &) = delete;
+	Rejector(const Rejector & rhs)
+	{
+		rhs.m_pCore->IncRef();
+		m_pCore = rhs.m_pCore;
+	}
+	Rejector & operator=(const Rejector & rhs)
+	{
+		if (m_pCore)
+		{
+			m_pCore->DecRef();
+		}
+		rhs.m_pCore->IncRef();
+		m_pCore = rhs.m_pCore;
+		return *this;
+	}
 
 public:
 	template<typename T1>

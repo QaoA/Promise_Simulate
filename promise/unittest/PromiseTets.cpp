@@ -1,5 +1,5 @@
-#include "promise.h"
-#include "NameSpace.h"
+#include "../promise.h"
+#include "../NameSpace.h"
 #include <gtest/gtest.h>
 #include <iostream>
 

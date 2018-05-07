@@ -1,14 +1,16 @@
-#ifndef EVENT_LOOPER_H
-#define EVENT_LOOPER_H
+#ifndef EVENTLOOPER_H
+#define EVENTLOOPER_H
 
 #include "Epoller.h"
-#include "ThreadPool.h"
 #include "DummyFile.h"
 #include <thread>
 #include <atomic>
 #include <map>
+#include <thread>
+#include <mutex>
+#include <queue>
 
-typedef std::function<void(EventHandler * handler, uint32_t event)> OnEventFunc;
+typedef std::function<void()> Functor;
 
 class EventLooper
 {
@@ -17,21 +19,30 @@ public:
 	~EventLooper();
 
 public:
-	void RegisterHandler(EventHandler & handler);
 	void RemoveHandler(EventHandler & handler);
 	void UpdateHandler(EventHandler & handler);
-	void StartLoop(OnEventFunc func);
+	void StartLoop();
 	void StopLoop();
+	void RunInLoop(Functor f);
+
+private:
+	void RegisterHandler(EventHandler & handler);
+	bool IsInThread();
+	void RunFunctors();
+	void WakeUp();
 
 private:
 	static constexpr int maxPollEventSize = 100;
 
 private:
-	std::map<int, EventHandler*> m_handlerList;
+	std::map<int, EventHandler *> m_handlerList;
 	Epoller m_epoller;
-	DummyFile m_stoper;
+	DummyFile m_wakeuper;
 	std::atomic<bool> m_running;
+	std::queue<std::function<void()>> m_pendingFunctions;
+	std::queue<std::function<void()>> m_runningFunctions;
+	std::mutex m_mutex;
+	std::thread::id m_id;
 };
 
-#endif
-
+#endif // !EVENTLOOPER_H
